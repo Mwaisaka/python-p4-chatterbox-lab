@@ -9,26 +9,29 @@ from models import db, Message
 
 fake = Faker()
 
-usernames = [fake.first_name() for i in range(4)]
-if "Duane" not in usernames:
-    usernames.append("Duane")
+with app.app_context():
+    db.create_all()
 
-def make_messages():
+    usernames = [fake.first_name() for i in range(4)]
+    if "Duane" not in usernames:
+        usernames.append("Duane")
 
-    Message.query.delete()
-    
-    messages = []
+    def make_messages():
 
-    for i in range(20):
-        message = Message(
-            body=fake.sentence(),
-            username=rc(usernames),
-        )
-        messages.append(message)
+        Message.query.delete()
+        
+        messages = []
 
-    db.session.add_all(messages)
-    db.session.commit()        
+        for i in range(20):
+            message = Message(
+                body=fake.sentence(),
+                username=rc(usernames),
+            )
+            messages.append(message)
 
-if __name__ == '__main__':
-    with app.app_context():
-        make_messages()
+        db.session.add_all(messages)
+        db.session.commit()        
+
+    if __name__ == '__main__':
+        # with app.app_context():
+            make_messages()
